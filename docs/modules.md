@@ -1,0 +1,1 @@
+::: realestate_rag.foo
