@@ -37,7 +37,12 @@ dev = [
     "mkdocstrings[python]>=0.26.1",
     "bs4",
     "requests",
-    "typer"
+    "typer",
+    "chromadb",
+    "sentence_transformers",
+    "selenium",
+    "webdriver-manager",
+    "openai"
 ]
 
 [build-system]
