@@ -73,7 +73,6 @@ def main(
     city: Annotated[str, typer.Argument(help="Download data for this city")],
     startdate: Annotated[str, typer.Argument(help="Start date in YYYY-MM-DD format")],
     enddate: Annotated[str, typer.Argument(help="End date in YYYY-MM-DD format")],
-    data_path: Annotated[str, typer.Option("--data-path", "-d", help="Path to save data files"), DATA_PATH],
 ) -> None:
     start_dt = datetime.strptime(startdate, "%Y-%m-%d")
     end_dt = datetime.strptime(enddate, "%Y-%m-%d")

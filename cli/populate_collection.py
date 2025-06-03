@@ -2,7 +2,7 @@ from typing import Annotated
 
 import typer
 
-from realestate_rag.embed import embed_into_vecdb
+from realestate_rag.rag.embed import embed_into_vecdb
 
 
 def populate_collection(collection_name, property_details_path):
