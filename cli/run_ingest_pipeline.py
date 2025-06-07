@@ -8,14 +8,16 @@ from typing import Annotated
 
 import typer
 
-from realestate_rag.config import DATA_PATH
+from realestate_rag.config import DATA_PATH, LOG_INGEST
 from realestate_rag.ingest.download_property import download_property_detail
 from realestate_rag.ingest.extract_auctions import download_auction_result
 
+log_file = os.path.expanduser(LOG_INGEST)
+os.makedirs(os.path.dirname(log_file), exist_ok=True)
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(process)s %(levelname)s %(message)s",
-    filename="/tmp/get-domains.log",
+    filename=log_file,
     filemode="a",
 )
 
@@ -24,22 +26,14 @@ def download(url_file: str, output: str, save_every: int = 10) -> None:
     with open(url_file) as f:
         property_blobs = json.load(f)
 
-    downloaded_urls = set()
     output = os.path.expanduser(output)
-    with open(output) as f:
-        for line in f:
-            try:
-                entry = json.loads(line)
-                url = entry.get("url") or entry.get("domain_link")
-                if url:
-                    downloaded_urls.add(url)
-            except Exception as e:
-                logging.warning(f"Failed to parse line: {e}")
+
+    downloaded_urls = _get_downloaded_urls(output)
 
     results = []
     count = 0
 
-    for i, item in enumerate(property_blobs):
+    for item in property_blobs:
         url = item.get("domain_link")
         if not url or url in downloaded_urls:
             continue
@@ -59,7 +53,7 @@ def download(url_file: str, output: str, save_every: int = 10) -> None:
                     downloaded_urls.add(res.get("url") or res.get("domain_link"))
             results = []
 
-        time.sleep(random.uniform(0.5, 1.5))
+        time.sleep(random.uniform(0.5, 1.5))  # noqa: S311
 
     # last batch
     if results:
@@ -67,6 +61,22 @@ def download(url_file: str, output: str, save_every: int = 10) -> None:
             for res in results:
                 if res is not None:
                     out_f.write(json.dumps(res) + "\n")
+
+
+def _get_downloaded_urls(output: str) -> set:
+    """Get already downloaded URLs from the output file."""
+    downloaded_urls = set()
+    if os.path.exists(output):
+        with open(output) as f:
+            for line in f:
+                try:
+                    data = json.loads(line)
+                    url = data.get("url") or data.get("domain_link")
+                    if url:
+                        downloaded_urls.add(url)
+                except json.JSONDecodeError:
+                    continue
+    return downloaded_urls
 
 
 def main(
@@ -78,7 +88,7 @@ def main(
     end_dt = datetime.strptime(enddate, "%Y-%m-%d")
 
     if start_dt > end_dt:
-        raise ValueError("Start date must be before end date")
+        raise ValueError("Start date must be before end date")  # noqa: TRY003
 
     # Extract auction results to get property urls
     path = os.path.expanduser(DATA_PATH)

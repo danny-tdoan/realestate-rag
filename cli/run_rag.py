@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from realestate_rag import config
-from realestate_rag.rag import answer
+from realestate_rag.rag.rag import answer
 
 chroma_client = PersistentClient(path=os.path.expanduser(config.CHROMA_DB_PATH))
 collection = chroma_client.get_or_create_collection(

@@ -1,68 +1,125 @@
-# realestate-rag
+Crawl real estate data, then build RAG. There's another version that uses MCP, refer to the repo `realestate-rag-mcp`
 
-[![Release](https://img.shields.io/github/v/release/danny-tdoan/realestate-rag)](https://img.shields.io/github/v/release/danny-tdoan/realestate-rag)
-[![Build status](https://img.shields.io/github/actions/workflow/status/danny-tdoan/realestate-rag/main.yml?branch=main)](https://github.com/danny-tdoan/realestate-rag/actions/workflows/main.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/danny-tdoan/realestate-rag/branch/main/graph/badge.svg)](https://codecov.io/gh/danny-tdoan/realestate-rag)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/danny-tdoan/realestate-rag)](https://img.shields.io/github/commit-activity/m/danny-tdoan/realestate-rag)
-[![License](https://img.shields.io/github/license/danny-tdoan/realestate-rag)](https://img.shields.io/github/license/danny-tdoan/realestate-rag)
+---
 
-Crawl real estate data, then RAG and other GenAI
+# RealEstate RAG
 
-- **Github repository**: <https://github.com/danny-tdoan/realestate-rag/>
-- **Documentation** <https://danny-tdoan.github.io/realestate-rag/>
+A Retrieval-Augmented Generation (RAG) system for searching and answering questions about real estate properties in Australia. This project enables you to download property data, populate a vector database for semantic search, and run a FastAPI server to provide a natural language property search API.
 
-## Getting started with your project
+## Features
 
-### 1. Create a New Repository
+- Download property details and auction results
+- Populate a Chroma vector database with property data
+- Semantic and filtered search over property listings
+- FastAPI endpoint for natural language property queries
 
-First, create a repository on GitHub with the same name as this project, and then run the following commands:
+---
 
-```bash
-git init -b main
-git add .
-git commit -m "init commit"
-git remote add origin git@github.com:danny-tdoan/realestate-rag.git
-git push -u origin main
+## 1. Download Data with `run_ingest_pipeline`
+
+This script downloads property details and auction results for a given city and date range.
+
+**Usage:**
+
+```sh
+python -m cli.run_ingest_pipeline <city> <start_date> <end_date>
 ```
 
-### 2. Set Up Your Development Environment
+- `<city>`: Name of the city (e.g., `melbourne`)
+- `<start_date>`: Start date in `YYYY-MM-DD` format (e.g., `2025-02-01`)
+- `<end_date>`: End date in `YYYY-MM-DD` format (e.g., `2025-05-10`)
 
-Then, install the environment and the pre-commit hooks with
+**Example:**
 
-```bash
-make install
+```sh
+python -m cli.run_ingest_pipeline melbourne 2025-02-01 2025-05-10
 ```
 
-This will also generate your `uv.lock` file
+This will download property data for Melbourne between February 1, 2025 and May 10, 2025.
 
-### 3. Run the pre-commit hooks
+---
 
-Initially, the CI/CD pipeline might be failing due to formatting issues. To resolve those run:
+## 2. Populate the Vector Database with `populate_collection`
 
-```bash
-uv run pre-commit run -a
+This script populates a Chroma vector database collection with property details for semantic search.
+
+**Usage:**
+
+```sh
+python -m cli.populate_collection.py <collection_name> <property_details_path>
 ```
 
-### 4. Commit the changes
+- `<collection_name>`: Name of the ChromaDB collection to populate (e.g., `melbourne`)
+- `<property_details_path>`: Path to the property details JSONL file (e.g., `downloaded_data/property_details.jsonl`)
 
-Lastly, commit the changes made by the two steps above to your repository.
+**Example:**
 
-```bash
-git add .
-git commit -m 'Fix formatting issues'
-git push origin main
+```sh
+python -m cli.populate_collection.py melbourne downloaded_data/property_details.jsonl
 ```
 
-You are now ready to start development on your project!
-The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
+---
 
-To finalize the set-up for publishing to PyPI, see [here](https://fpgmaas.github.io/cookiecutter-uv/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see [here](https://fpgmaas.github.io/cookiecutter-uv/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-uv/features/codecov/).
+## 3. Start the API Server with `run_rag`
 
-## Releasing a new version
+This script starts a FastAPI server that exposes a `/query` endpoint for natural language property search.
 
+**Usage:**
 
+```sh
+uvicorn cli.run_rag:app
+```
+
+The API will be available at `http://localhost:8000` by default.
+
+### Querying the API
+
+Send a POST request to `/query` with a JSON body:
+
+```json
+{
+  "query": "3 bedroom house in Richmond with a pool"
+}
+```
+
+**Example using `curl`:**
+
+```sh
+curl -X POST "http://localhost:8000/query" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "3 bedroom house in Richmond with a pool"}'
+```
+
+---
+
+## Requirements
+
+- Python 3.10+
+- Install dependencies:
+
+  ```sh
+  pip install -r requirements.txt
+  ```
+
+- Set the `API_KEY` environment variable for OpenAI access:
+
+  ```sh
+  export API_KEY=sk-...
+  ```
+
+---
+
+## Project Structure
+
+- `cli/` — Command-line scripts for data ingestion, population, and API
+- `realestate_rag/` — Core modules for embedding, search, and RAG logic
+- `tests/` — Unit tests
+
+---
+
+## License
+
+MIT
 
 ---
 
