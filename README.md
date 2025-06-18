@@ -7,7 +7,7 @@ Crawl real estate data, then build RAG. There's another version that uses MCP, r
 A Retrieval-Augmented Generation (RAG) system for searching and answering questions about real estate properties in Australia. This project enables you to download property data, populate a vector database for semantic search, and run a FastAPI server to provide a natural language property search API.
 
 The system includes an indexing pipeline and a RAG pipeline as described in the diagram below
-![alt text](image.png)
+![Diagram](image-1.png)
 
 ##Example
 
