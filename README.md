@@ -9,7 +9,7 @@ A Retrieval-Augmented Generation (RAG) system for searching and answering questi
 The system includes an indexing pipeline and a RAG pipeline as described in the diagram below
 ![Diagram](docs/image-7.png)
 
-##Example
+## Example
 
 **Query**
 ```bash
