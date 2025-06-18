@@ -9,6 +9,28 @@ A Retrieval-Augmented Generation (RAG) system for searching and answering questi
 The system includes an indexing pipeline and a RAG pipeline as described in the diagram below
 ![alt text](image.png)
 
+##Example
+
+**Query**
+```bash
+curl -X POST "http://localhost:8000/query" \
+     -H "Content-Type: application/json" \
+     -d '{"query": "renovated house with 4 bedrooms in school zone of Camberwell  high school"}'
+```
+
+**Output**
+
+> Based on the provided property descriptions, the property that best fits the criteria of a renovated house with 4 bedrooms in the school zone of Camberwell High School is:
+>
+>[#4 East Court, Camberwell VIC 3124](https://www.domain.com.au/4-east-court-camberwell-vic-3124-2019595429)
+>
+> Resting in the bowl of a leafy court, this elegant five-bedroom (or four-bedroom plus study) weatherboard home has been beautifully renovated for luxurious family living.
+>
+>
+> This property is located in the school zone of Camberwell High School."
+
+
+
 ## Features
 
 - Download property details and auction results
