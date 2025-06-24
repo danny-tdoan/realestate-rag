@@ -3,8 +3,12 @@ Crawl real estate data, then build RAG. There's another version that uses MCP, r
 ---
 
 # RealEstate RAG
+## What problem is it solving?
+Real estate sites in Australia typically offer rigid, suburb-based filters that don’t match how people actually search. For example, a query like “renovated 3-bedroom homes in the Box Hill High School zone” simply isn’t possible.
 
-A Retrieval-Augmented Generation (RAG) system for searching and answering questions about real estate properties in Australia. This project enables you to download property data, populate a vector database for semantic search, and run a FastAPI server to provide a natural language property search API.
+**This project builds a Retrieval-Augmented Generation (RAG) to enable flexible, natural language property search.**
+
+A Retrieval-Augmented Generation (RAG) system for searching and answering questions about real estate properties in Australia using publicly available property data. This project enables you to download property data, populate a vector database for semantic search, and run a FastAPI server to provide a natural language property search API.
 
 The system includes an indexing pipeline and a RAG pipeline as described in the diagram below
 ![Diagram](docs/image-7.png)
